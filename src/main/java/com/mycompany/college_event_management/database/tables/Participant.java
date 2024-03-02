@@ -25,13 +25,15 @@ public class Participant {
     public int ParticipantId;
     public String ParticipantName;
     public String ParticipantPhone;
+    public String Participantemail;
     public String ParticipantUsername;
     public String ParticipantPassword;
 
-    public Participant(int ParticipantId, String ParticipantName, String ParticipantPhone, String ParticipantUsername, String ParticipantPassword) {
+    public Participant(int ParticipantId, String ParticipantName, String ParticipantPhone, String Participantemail, String ParticipantUsername, String ParticipantPassword) {
         this.ParticipantId = ParticipantId;
         this.ParticipantName = ParticipantName;
         this.ParticipantPhone = ParticipantPhone;
+        this.Participantemail = Participantemail;
         this.ParticipantUsername = ParticipantUsername;
         this.ParticipantPassword = ParticipantPassword;
     }
@@ -46,6 +48,7 @@ public class Participant {
                         rs.getInt("Participant_id"),
                         rs.getString("Participant_name"),
                         rs.getString("Participant_phone"),
+                        rs.getString("Participant_email"),
                         rs.getString("Participant_username"),
                         rs.getString("Participant_password")
                 );
@@ -66,6 +69,7 @@ public class Participant {
                         rs.getString("Participant_name"),
                         rs.getString("Participant_phone"),
                         rs.getString("Participant_username"),
+                        rs.getString("Participant_email"),
                         rs.getString("Participant_password")
                 );
             }
