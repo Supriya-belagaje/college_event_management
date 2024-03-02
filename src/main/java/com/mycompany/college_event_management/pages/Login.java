@@ -1,5 +1,8 @@
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.database.DatabaseManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JFrame;
 
 
@@ -20,7 +23,30 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+        init();
+    }
+    
+     public void init() {
+        try {
+            // Get the singleton instance of DatabaseManager
+            DatabaseManager dbManager = DatabaseManager.getInstance();
+            
+            // Execute a query
+            ResultSet rs = dbManager.executeQuery("SELECT * FROM test");
+            
+            // Process the result set
+            while (rs.next()) {
+                // Handle each row of the result set
+                String column1 = rs.getString("b");
+                System.out.println(column1);
+                // Process other columns as needed
+            }
+            
+            // Close the result set
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
