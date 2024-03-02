@@ -1,6 +1,8 @@
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.Utils.MD5;
 import com.mycompany.college_event_management.database.DatabaseManager;
+import com.mycompany.college_event_management.database.tables.Organizer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -23,7 +25,6 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        init();
     }
     
      public void init() {
@@ -60,9 +61,9 @@ public class Login extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        userName = new javax.swing.JTextField();
+        password = new javax.swing.JPasswordField();
+        LoginButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -79,27 +80,32 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setText("Password");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 160, 68, -1));
 
-        jTextField1.setBackground(new java.awt.Color(255, 255, 204));
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        userName.setBackground(new java.awt.Color(255, 255, 204));
+        userName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        userName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                userNameActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 200, -1));
+        getContentPane().add(userName, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 200, -1));
 
-        jPasswordField1.setBackground(new java.awt.Color(255, 255, 204));
-        jPasswordField1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        password.setBackground(new java.awt.Color(255, 255, 204));
+        password.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                passwordActionPerformed(evt);
             }
         });
-        getContentPane().add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 200, -1));
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 200, -1));
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("Login");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, -1, -1));
+        LoginButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        LoginButton.setText("Login");
+        LoginButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LoginButtonMouseClicked(evt);
+            }
+        });
+        getContentPane().add(LoginButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, -1, -1));
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton2.setText("Close");
@@ -126,13 +132,13 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void userNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameActionPerformed
         // TODO add your handling code here:S
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_userNameActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_passwordActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -142,6 +148,31 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println(roleSelection.getSelectedItem());
     }//GEN-LAST:event_roleSelectionActionPerformed
+
+    private void LoginButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginButtonMouseClicked
+       switch(roleSelection.getSelectedItem().toString()){
+           case "Admin":
+               break;
+            case "Organizer":
+                Organizer org = Organizer.getOrganizerByUsername(userName.getText());
+                if(org == null){
+                    System.out.println("Organizer not found wrong user name " + userName.getText());
+                    return;
+                }
+                String pHash = MD5.hashPassword(password.getText());
+                if(pHash.equals(org.organizerPassword)) {
+                    System.out.println("Login successfull");
+                    //Redirect to organizer page
+                }
+                else {
+                    System.out.println("Wrong password");
+                    //Update Error text here
+                }
+               break;
+            case "Participant":
+                break;
+       }
+    }//GEN-LAST:event_LoginButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -179,14 +210,14 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton LoginButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField password;
     private javax.swing.JComboBox<String> roleSelection;
+    private javax.swing.JTextField userName;
     // End of variables declaration//GEN-END:variables
 }
