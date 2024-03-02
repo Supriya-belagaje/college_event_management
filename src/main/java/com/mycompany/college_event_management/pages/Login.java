@@ -1,9 +1,12 @@
 package com.mycompany.college_event_management.pages;
 
 import com.mycompany.college_event_management.Utils.MD5;
+import com.mycompany.college_event_management.database.AppState;
 import com.mycompany.college_event_management.database.DatabaseManager;
+import com.mycompany.college_event_management.database.tables.Admin;
 import com.mycompany.college_event_management.database.tables.Organizer;
 import com.mycompany.college_event_management.database.tables.Participant;
+import java.awt.Dimension;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -26,6 +29,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //this.setSize(new Dimension(400, 300));
     }
     
      public void init() {
@@ -154,7 +158,25 @@ public class Login extends javax.swing.JFrame {
        String pHash= null;
         switch(roleSelection.getSelectedItem().toString()){
            case "Admin":
+               Admin ad = Admin.getAdminByUsername(userName.getText());
+                if(ad == null){
+                    System.out.println("Admin not found wrong user name " + userName.getText());
+                    return;
+                }
+                pHash = MD5.hashPassword(password.getText());
+                if(pHash.equals(ad.adminPassword)) {
+                    System.out.println("Login successfull");
+                    //Redirect to organizer page
+                    admin_home adminPage = new admin_home();
+                    adminPage.setVisible(true);
+                    this.dispose();
+                }
+                else {
+                    System.out.println("Wrong password");
+                    //Update Error text here
+                }
                break;
+               
             case "Organizer":
                 Organizer org = Organizer.getOrganizerByUsername(userName.getText());
                 if(org == null){
@@ -164,7 +186,11 @@ public class Login extends javax.swing.JFrame {
                 pHash = MD5.hashPassword(password.getText());
                 if(pHash.equals(org.organizerPassword)) {
                     System.out.println("Login successfull");
+                    AppState.logedinOrg = org;
                     //Redirect to organizer page
+                    org_homepage secondPage = new org_homepage();
+                    secondPage.setVisible(true);
+                    this.dispose(); 
                 }
                 else {
                     System.out.println("Wrong password");
@@ -181,6 +207,9 @@ public class Login extends javax.swing.JFrame {
                 if(pHash.equals(part.ParticipantPassword)) {
                     System.out.println("Login successfull");
                     //Redirect to organizer page
+                    participant_home sPage = new participant_home();
+                    sPage.setVisible(true);
+                    this.dispose(); 
                 }
                 else {
                     System.out.println("Wrong password");
