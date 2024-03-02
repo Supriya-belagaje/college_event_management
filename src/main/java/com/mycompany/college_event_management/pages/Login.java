@@ -3,6 +3,7 @@ package com.mycompany.college_event_management.pages;
 import com.mycompany.college_event_management.Utils.MD5;
 import com.mycompany.college_event_management.database.DatabaseManager;
 import com.mycompany.college_event_management.database.tables.Organizer;
+import com.mycompany.college_event_management.database.tables.Participant;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -150,7 +151,8 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_roleSelectionActionPerformed
 
     private void LoginButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginButtonMouseClicked
-       switch(roleSelection.getSelectedItem().toString()){
+       String pHash= null;
+        switch(roleSelection.getSelectedItem().toString()){
            case "Admin":
                break;
             case "Organizer":
@@ -159,7 +161,7 @@ public class Login extends javax.swing.JFrame {
                     System.out.println("Organizer not found wrong user name " + userName.getText());
                     return;
                 }
-                String pHash = MD5.hashPassword(password.getText());
+                pHash = MD5.hashPassword(password.getText());
                 if(pHash.equals(org.organizerPassword)) {
                     System.out.println("Login successfull");
                     //Redirect to organizer page
@@ -170,7 +172,21 @@ public class Login extends javax.swing.JFrame {
                 }
                break;
             case "Participant":
-                break;
+                Participant part = Participant.getParticipantByUsername(userName.getText());
+                if(part == null){
+                    System.out.println("Participant not found!! wrong user name " + userName.getText());
+                    return;
+                }
+                pHash = MD5.hashPassword(password.getText());
+                if(pHash.equals(part.ParticipantPassword)) {
+                    System.out.println("Login successfull");
+                    //Redirect to organizer page
+                }
+                else {
+                    System.out.println("Wrong password");
+                    //Update Error text here
+                }
+               break;
        }
     }//GEN-LAST:event_LoginButtonMouseClicked
 
