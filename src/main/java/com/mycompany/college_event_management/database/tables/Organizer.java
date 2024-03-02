@@ -24,13 +24,15 @@ public class Organizer {
     public int organizerId;
     public String organizerName;
     public String organizerPhone;
+    public String organizeremail;
     public String organizerUsername;
     public String organizerPassword;
 
-    public Organizer(int organizerId, String organizerName, String organizerPhone, String organizerUsername, String organizerPassword) {
+    public Organizer(int organizerId, String organizerName, String organizerPhone,String organizeremail, String organizerUsername, String organizerPassword) {
         this.organizerId = organizerId;
         this.organizerName = organizerName;
         this.organizerPhone = organizerPhone;
+        this.organizeremail = organizeremail;
         this.organizerUsername = organizerUsername;
         this.organizerPassword = organizerPassword;
     }
@@ -45,6 +47,7 @@ public class Organizer {
                         rs.getInt("organizer_id"),
                         rs.getString("organizer_name"),
                         rs.getString("organizer_phone"),
+                        rs.getString("organizer_email"),
                         rs.getString("orgasizer_username"),
                         rs.getString("organizer_password")
                 );
@@ -64,6 +67,7 @@ public class Organizer {
                         rs.getInt("organizer_id"),
                         rs.getString("organizer_name"),
                         rs.getString("organizer_phone"),
+                        rs.getString("organizer_email"),
                         rs.getString("orgasizer_username"),
                         rs.getString("organizer_password")
                 );
