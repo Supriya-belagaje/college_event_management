@@ -4,13 +4,30 @@
  */
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.Utils.EventTableModel;
+import com.mycompany.college_event_management.database.AppState;
+import com.mycompany.college_event_management.database.tables.Event;
+import com.mycompany.college_event_management.database.tables.Organizer;
+import com.mycompany.college_event_management.database.tables.Participant;
+import com.mycompany.college_event_management.database.tables.Register;
+import static com.mycompany.college_event_management.database.tables.Register.unregisterFromEvent;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import static jdk.jfr.FlightRecorder.register;
 
 /**
  *
  * @author supru
  */
 public class participant_home extends javax.swing.JFrame {
+     private List<String> items = new ArrayList<>();
 
     /**
      * Creates new form participant_home
@@ -18,6 +35,52 @@ public class participant_home extends javax.swing.JFrame {
     public participant_home() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        Participant loggedinpart = AppState.logedingpart;
+        namevalue.setText(loggedinpart.ParticipantName);
+        emailvalue.setText(loggedinpart.Participantemail);
+        phonevalue.setText(loggedinpart.ParticipantPhone);
+        usernamevalue.setText(loggedinpart.ParticipantUsername);
+        getEvents();
+    }
+    
+    private void getEvents(){
+        var allEvents = Event.getEventsWithParticipants();
+        System.err.println("allEvents" + allEvents.size());
+        //Table
+        EventTableModel model = new EventTableModel(allEvents);
+        evttab.setModel(model);
+        
+        //Pannel with delete
+//        for (Event e : allEvents) {
+//          items.add(e.eventName);
+//        }
+        refreshItemList();
+    }
+    private void refreshItemList() {
+        evtlist.removeAll();
+
+        for (String item : items) {
+            JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel itemLabel = new JLabel(item);
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener((ActionEvent e) -> {
+                items.remove(item);
+                refreshItemList();
+                // Revalidate and repaint to ensure UI updates are displayed
+                evtlist.revalidate();
+                evtlist.repaint();
+            });
+
+            itemPanel.add(itemLabel);
+            itemPanel.add(deleteButton);
+            evtlist.add(itemPanel);
+            System.out.println("added "+ item);
+        }
+
+        // In case the list is empty, show a message
+        if (items.isEmpty()) {
+            evtlist.add(new JLabel("No items available."));
+        }
     }
 
     /**
@@ -29,36 +92,315 @@ public class participant_home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        registernew = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        nametext = new javax.swing.JLabel();
+        phonetext = new javax.swing.JLabel();
+        namevalue = new javax.swing.JLabel();
+        emailvalue = new javax.swing.JLabel();
+        phonevalue = new javax.swing.JLabel();
+        usernamevalue = new javax.swing.JLabel();
+        back = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        evttab = new javax.swing.JTable();
+        evtlist = new javax.swing.JPanel();
+        unregister = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        usernametext = new javax.swing.JLabel();
+        emailtext = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        comment = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        Submit = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        ratingslider = new javax.swing.JSlider();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("jButton1");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(223, 202, -1, -1));
+        registernew.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        registernew.setText("View All Events");
+        registernew.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                registernewMouseClicked(evt);
+            }
+        });
+        registernew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registernewActionPerformed(evt);
+            }
+        });
+        getContentPane().add(registernew, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 270, 130, -1));
 
-        jButton2.setText("jButton2");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(223, 137, -1, -1));
-
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(162, 6, 37, -1));
-
-        jLabel2.setText("jLabel2");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 46, 37, -1));
+        jLabel1.setText("Participant Details");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 10, 190, -1));
 
         jLabel3.setText("Registered event");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, -1));
 
-        jLabel4.setText("Unregistered event");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 120, -1));
+        nametext.setText("name:");
+        getContentPane().add(nametext, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
+
+        phonetext.setText("phone:");
+        getContentPane().add(phonetext, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, -1));
+
+        namevalue.setText("name");
+        getContentPane().add(namevalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 50, -1, -1));
+
+        emailvalue.setText("email");
+        getContentPane().add(emailvalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, -1, -1));
+
+        phonevalue.setText("phone");
+        getContentPane().add(phonevalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, -1, -1));
+
+        usernamevalue.setText("username");
+        getContentPane().add(usernamevalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, -1, -1));
+
+        back.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        back.setText("Back");
+        back.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backMouseClicked(evt);
+            }
+        });
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
+        getContentPane().add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 580, 130, 20));
+
+        evttab.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(evttab);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, -1, -1));
+        getContentPane().add(evtlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, -1, -1));
+
+        unregister.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        unregister.setText("Unregister");
+        unregister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unregisterActionPerformed(evt);
+            }
+        });
+        getContentPane().add(unregister, new org.netbeans.lib.awtextra.AbsoluteConstraints(609, 350, 130, -1));
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton2.setText("Delete Account");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, -1, -1));
+
+        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        usernametext.setText("username:");
+        jPanel1.add(usernametext, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
+
+        emailtext.setText("email:");
+        jPanel1.add(emailtext, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, 20));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 270, 100));
+
+        jLabel2.setText("Rating");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 230, -1, -1));
+
+        jLabel4.setText("Comment");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 280, -1, -1));
+
+        comment.setColumns(20);
+        comment.setRows(5);
+        jScrollPane2.setViewportView(comment);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 250, -1, -1));
+
+        jPanel2.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        Submit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        Submit.setText("Submit");
+        Submit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SubmitMouseClicked(evt);
+            }
+        });
+        jPanel2.add(Submit, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, 130, -1));
+
+        jLabel5.setBackground(new java.awt.Color(153, 102, 255));
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setText("Feedback");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 10, -1, 40));
+        jPanel2.add(ratingslider, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, -1));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 130, 420, 380));
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setText("Give feedback!!!!!");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 80, 210, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void registernewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registernewActionPerformed
+        
+
+    }//GEN-LAST:event_registernewActionPerformed
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backActionPerformed
+
+    private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
+    Login homePage = new Login();
+    homePage.setVisible(true);
+    this.dispose();        // TODO add your handling code here:
+    }//GEN-LAST:event_backMouseClicked
+
+    private void registernewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registernewMouseClicked
+        // TODO add your handling code here:
+                    Unregestered_event reg_e = new Unregestered_event();
+                    reg_e.setVisible(true);
+                    this.dispose(); 
+    }//GEN-LAST:event_registernewMouseClicked
+
+    private void unregisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unregisterActionPerformed
+// TODO add your handling code here:
+         int selectedRowIndex = evttab.getSelectedRow();
+
+    if (selectedRowIndex != -1) { // Ensure a row is selected
+        // Get the event ID from the selected row
+        int eventId = (int) evttab.getValueAt(selectedRowIndex, 0); // Assuming event ID is in the first column
+        
+        // Get the participant ID (you can obtain this from your application's context)
+        int participantId = AppState.logedingpart.getParticipantId();
+
+        // Prompt the user for confirmation (optional)
+        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to unregister from this event?", "Confirm Unregister", JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) { // If user confirms unregistering
+            // Attempt to unregister from the event
+            boolean unregistered = unregisterFromEvent(eventId, participantId);
+            
+            if (unregistered) {
+                // If successfully unregistered, you might want to update the UI or show a message
+                JOptionPane.showMessageDialog(this, "Unregistered from the event successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to unregister from the event.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Please select an event to unregister from.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    }//GEN-LAST:event_unregisterActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:                  
+    // TODO add your handling code here:
+    Participant loggedInParticipant = AppState.logedingpart;
+
+    if (loggedInParticipant != null) {
+        int confirmDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete your account?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+        
+        if (confirmDialogResult == JOptionPane.YES_OPTION) {
+            // Perform delete operation
+            boolean deleted = Participant.deleteParticipant(loggedInParticipant.getParticipantId());
+
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Participant deleted successfully.");
+                // Redirect to login page or perform any other necessary action
+                // Example: navigateToLoginPage();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete participant.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Participant not logged in.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void SubmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SubmitMouseClicked
+       int selectedRowIndex = evttab.getSelectedRow();
+
+// Check if any row is selected
+if (selectedRowIndex != -1) {
+    // Retrieve the eventId from the selected row
+    int eventId = (int) evttab.getValueAt(selectedRowIndex, 0); // Assuming the eventId is in the first column
+
+    // Check if the event is over
+    boolean isEventOver = Event.isEventOver(eventId);
+
+    if (isEventOver) {
+        // Get participant ID
+        int participantId = AppState.logedingpart.getParticipantId(); // Assuming AppState has a method to get the logged-in participant
+        
+        // Get feedback message from text area
+        String comments = comment.getText();
+        
+        // Get rating from the rating component
+        int rating = (int) ratingslider.getValue(); // Assuming ratingSlider is a JSlider or similar component
+        
+        // Check if feedback message is not empty
+        if (!comments.isEmpty()) {
+            // Check if feedback is already submitted for this event by the participant
+            boolean isFeedbackSubmitted = Event.isFeedbackSubmitted(eventId, participantId);
+            
+            if (!isFeedbackSubmitted) {
+                // Submit feedback to the database
+                boolean feedbackSubmitted = feedback_org.submitFeedback(eventId, participantId, rating, comments);
+                
+                if (feedbackSubmitted) {
+                    // Display success message
+                    JOptionPane.showMessageDialog(null, "Feedback submitted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    // Clear feedback text area
+                    comment.setText("");
+                    
+                    // Reset rating component
+                    ratingslider.setValue(0);
+                } else {
+                    // Display error message if feedback submission fails
+                    JOptionPane.showMessageDialog(null, "Failed to submit feedback. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // Display message indicating that feedback has already been submitted
+                JOptionPane.showMessageDialog(null, "Feedback for this event has already been submitted.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            // Display warning message if feedback message is empty
+            JOptionPane.showMessageDialog(null, "Please provide your feedback before submitting.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    } else {
+        // Display a message indicating that feedback is not available yet
+        JOptionPane.showMessageDialog(null, "Feedback is not available yet for this event.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+} else {
+    // No row is selected, display an error message
+    JOptionPane.showMessageDialog(null, "Please select an event.", "Error", JOptionPane.ERROR_MESSAGE);
+}
+
+
+
+    }//GEN-LAST:event_SubmitMouseClicked
 
     /**
      * @param args the command line arguments
@@ -86,6 +428,7 @@ public class participant_home extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(participant_home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -96,11 +439,32 @@ public class participant_home extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton Submit;
+    private javax.swing.JButton back;
+    private javax.swing.JTextArea comment;
+    private javax.swing.JLabel emailtext;
+    private javax.swing.JLabel emailvalue;
+    private javax.swing.JPanel evtlist;
+    private javax.swing.JTable evttab;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel nametext;
+    private javax.swing.JLabel namevalue;
+    private javax.swing.JLabel phonetext;
+    private javax.swing.JLabel phonevalue;
+    private javax.swing.JSlider ratingslider;
+    private javax.swing.JButton registernew;
+    private javax.swing.JButton unregister;
+    private javax.swing.JLabel usernametext;
+    private javax.swing.JLabel usernamevalue;
     // End of variables declaration//GEN-END:variables
 }

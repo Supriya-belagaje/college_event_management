@@ -16,9 +16,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseManager {
-    private static final String url = "jdbc:mysql://localhost:3306/college_event";
+    private static final String url = "jdbc:mysql://localhost:3306/college_event_management";
     private static final String user = "root";
-    private static final String password = "Supru@2010";
+    private static final String password = "Supru@2004";
     
     private static DatabaseManager instance;
     private Connection connection;
@@ -41,6 +41,10 @@ public class DatabaseManager {
     public ResultSet executeQuery(String query) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeQuery(query);
+    }
+    
+    public Connection getConnection(){
+        return this.connection;
     }
     
     public void close() {

@@ -4,6 +4,16 @@
  */
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.Utils.EventTableModel;
+import com.mycompany.college_event_management.database.tables.Event;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 /**
  *
  * @author supru
@@ -13,8 +23,51 @@ public class Events extends javax.swing.JFrame {
     /**
      * Creates new form Events
      */
+    private List<String> items = new ArrayList<>();
     public Events() {
         initComponents();
+        fetchEvents();
+
+    }
+    private void fetchEvents(){
+        var allEvents = Event.getEventsByOrganizerId();
+        System.err.println("allEvents" + allEvents.size());
+        //Table
+        EventTableModel model = new EventTableModel(allEvents);
+        eventtab.setModel(model);
+        
+        //Pannel with delete
+        for (Event e : allEvents) {
+          items.add(e.eventName);
+        }
+        refreshItemList();
+    }
+    
+    private void refreshItemList() {
+        eventlist.removeAll();
+
+        for (String item : items) {
+            JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel itemLabel = new JLabel(item);
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener((ActionEvent e) -> {
+                items.remove(item);
+                refreshItemList();
+                // Revalidate and repaint to ensure UI updates are displayed
+                eventlist.revalidate();
+                eventlist.repaint();
+            });
+
+            itemPanel.add(itemLabel);
+            itemPanel.add(deleteButton);
+            eventlist.add(itemPanel);
+            System.out.println("added "+ item);
+        }
+
+        // In case the list is empty, show a message
+        if (items.isEmpty()) {
+            eventlist.add(new JLabel("No items available."));
+        }
     }
 
     /**
@@ -26,38 +79,32 @@ public class Events extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        eventtab = new javax.swing.JTable();
+        eventlist = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Events");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 96, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(160, 160, 160)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(162, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(274, Short.MAX_VALUE))
-        );
+        eventtab.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(eventtab);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 40, 375, 275));
+        getContentPane().add(eventlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -98,8 +145,9 @@ public class Events extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel eventlist;
+    private javax.swing.JTable eventtab;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

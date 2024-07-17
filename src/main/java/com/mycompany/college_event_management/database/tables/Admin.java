@@ -18,18 +18,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-public class Admin {
+public class admin {
     public String adminUsername;
     public String adminPassword;
-    public Admin( String adminUsername, String adminPassword) {
+    public admin( String adminUsername, String adminPassword) {
         this.adminUsername = adminUsername;
         this.adminPassword = adminPassword;
     }
-    public static Admin getAdminByUsername(String username) {
+    public static admin getAdminByUsername(String username) {
         try {
             ResultSet rs = DatabaseManager.getInstance().executeQuery("SELECT * FROM Admin WHERE admin_username = '" + username + "'");
             if (rs.next()) {
-                return new Admin(
+                return new admin(
                         
                         rs.getString("admin_username"),
                         rs.getString("admin_password")

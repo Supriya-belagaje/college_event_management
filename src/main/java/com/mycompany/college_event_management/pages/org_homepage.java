@@ -4,11 +4,18 @@
  */
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.Utils.EventTableModel;
 import com.mycompany.college_event_management.database.AppState;
+import com.mycompany.college_event_management.database.tables.Event;
 import com.mycompany.college_event_management.database.tables.Organizer;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-//import java.awt.Dimension;
-
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -19,16 +26,100 @@ public class org_homepage extends javax.swing.JFrame {
     /**
      * Creates new form org_homepage
      */
+     private List<String> items = new ArrayList<>();
+
     public org_homepage() {
         initComponents();
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         Organizer loggedInOrg = AppState.logedinOrg;
-        NameValue.setText(loggedInOrg.organizerName);
-        EmailValue.setText(loggedInOrg.organizeremail);
-        PhoneValue.setText(loggedInOrg.organizerPhone);
-        UsernameValue.setText(loggedInOrg.organizerUsername);
+        nametxt.setText(loggedInOrg.organizerName);
+        emailtxt.setText(loggedInOrg.organizeremail);
+        phonetxt.setText(loggedInOrg.organizerPhone);
+        usernametxt.setText(loggedInOrg.organizerUsername);
+        fetchEvents();
+        ///fetchCompEvents();
         //this.setSize(new Dimension(400, 300));
+
     }
+    private void fetchEvents(){
+        var allEvents = Event.getEventsByOrganizerId();
+        System.err.println("allEvents" + allEvents.size());
+        //Table
+        EventTableModel model = new EventTableModel(allEvents);
+        Eventtab.setModel(model);
+        
+        //Pannel with delete
+        for (Event e : allEvents) {
+          items.add(e.eventName);
+        }
+        refreshItemList();
+    }
+    private void refreshItemList() {
+        eventlist.removeAll();
+
+        for (String item : items) {
+            JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel itemLabel = new JLabel(item);
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener((ActionEvent e) -> {
+                items.remove(item);
+                refreshItemList();
+                // Revalidate and repaint to ensure UI updates are displayed
+                eventlist.revalidate();
+                eventlist.repaint();
+            });
+
+            itemPanel.add(itemLabel);
+            itemPanel.add(deleteButton);
+            eventlist.add(itemPanel);
+            System.out.println("added "+ item);
+        }
+
+        // In case the list is empty, show a message
+        if (items.isEmpty()) {
+            eventlist.add(new JLabel("No items available."));
+        }
+    }
+//    private void fetchCompEvents(){
+//        var allEvents = Event.getEventsByOrganizerId();
+//        System.err.println("allEvents" + allEvents.size());
+//        //Table
+//        EventTableModel model = new EventTableModel(allEvents);
+//        Eventtab.setModel(model);
+//        
+//        //Pannel with delete
+//        for (Event e : allEvents) {
+//          items.add(e.eventName);
+//        }
+//        refreshItemList();
+//    }
+//    private void refresh() {
+//        eventlist.removeAll();
+//
+//        for (String item : items) {
+//            JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//            JLabel itemLabel = new JLabel(item);
+//            JButton deleteButton = new JButton("Delete");
+//            deleteButton.addActionListener((ActionEvent e) -> {
+//                items.remove(item);
+//                refreshItemList();
+//                // Revalidate and repaint to ensure UI updates are displayed
+//                eventlist.revalidate();
+//                eventlist.repaint();
+//            });
+//
+//            itemPanel.add(itemLabel);
+//            itemPanel.add(deleteButton);
+//            eventlist.add(itemPanel);
+//            System.out.println("added "+ item);
+//        }
+//
+//        // In case the list is empty, show a message
+//        if (items.isEmpty()) {
+//            eventlist.add(new JLabel("No items available."));
+//        }
+//    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,69 +130,167 @@ public class org_homepage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Eventtab = new javax.swing.JTable();
+        eventlist = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        NameText = new javax.swing.JLabel();
-        NameValue = new javax.swing.JLabel();
-        EmailText = new javax.swing.JLabel();
-        EmailValue = new javax.swing.JLabel();
-        PhoneText = new javax.swing.JLabel();
-        UserNameText = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        nametxt = new javax.swing.JLabel();
+        phonetxt = new javax.swing.JLabel();
+        usernametxt = new javax.swing.JLabel();
+        emailtxt = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        PhoneValue = new javax.swing.JLabel();
-        UsernameValue = new javax.swing.JLabel();
-
-        jButton1.setText("jButton1");
+        jLabel1 = new javax.swing.JLabel();
+        feedback = new javax.swing.JButton();
+        back = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        NameText.setText("Name: ");
-        getContentPane().add(NameText, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, -1, -1));
+        Eventtab.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(Eventtab);
 
-        NameValue.setText("Name: ");
-        getContentPane().add(NameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, -1, -1));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 580, -1));
 
-        EmailText.setText("Email: ");
-        getContentPane().add(EmailText, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+        javax.swing.GroupLayout eventlistLayout = new javax.swing.GroupLayout(eventlist);
+        eventlist.setLayout(eventlistLayout);
+        eventlistLayout.setHorizontalGroup(
+            eventlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        eventlistLayout.setVerticalGroup(
+            eventlistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
-        EmailValue.setText("Email: ");
-        getContentPane().add(EmailValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, -1, -1));
+        getContentPane().add(eventlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, -1, -1));
 
-        PhoneText.setText("Phone:");
-        getContentPane().add(PhoneText, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, -1));
+        jButton1.setText("Create new event");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 390, -1, -1));
 
-        UserNameText.setText("Username:");
-        getContentPane().add(UserNameText, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(174, 16, 37, -1));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setText("Create a new event");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 169, 213, -1));
+        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton2.setText("jButton2");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, -1, -1));
+        nametxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nametxt.setText("Name");
+        jPanel1.add(nametxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 20, 340, -1));
 
-        jLabel4.setText("Existing events");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 110, -1));
+        phonetxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        phonetxt.setText("phone");
+        jPanel1.add(phonetxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 70, 280, -1));
 
-        jButton3.setText("jButton3");
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 220, -1, -1));
+        usernametxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        usernametxt.setText("Username");
+        jPanel1.add(usernametxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 100, 380, -1));
 
-        jLabel5.setText("Organizer details");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 110, -1));
+        emailtxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        emailtxt.setText("Email");
+        jPanel1.add(emailtxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 50, 370, -1));
 
-        PhoneValue.setText("Phone:");
-        getContentPane().add(PhoneValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel4.setText("Name");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, 210, -1));
 
-        UsernameValue.setText("Username:");
-        getContentPane().add(UsernameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 110, -1, -1));
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel6.setText("Email");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 50, 210, -1));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel7.setText("phone");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 70, 210, -1));
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel5.setText("Username");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, 250, -1));
+
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1560, 140));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setText("Registered Events");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 230, -1));
+
+        feedback.setText("View Feedbacks");
+        feedback.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                feedbackMouseClicked(evt);
+            }
+        });
+        jPanel2.add(feedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 350, -1, -1));
+
+        back.setText("Back");
+        back.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backMouseClicked(evt);
+            }
+        });
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
+        jPanel2.add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 440, -1, -1));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1560, 920));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        addevent aevt = new addevent();
+        aevt.setVisible(true);
+        this.dispose();
+
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backActionPerformed
+
+    private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
+        // TODO add your handling code here:
+        Login log = new Login();
+        log.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_backMouseClicked
+
+    private void feedbackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_feedbackMouseClicked
+        // TODO add your handling code here:
+        feedback_org feed = new feedback_org();
+        feed.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_feedbackMouseClicked
 
     /**
      * @param args the command line arguments
@@ -139,20 +328,22 @@ public class org_homepage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel EmailText;
-    private javax.swing.JLabel EmailValue;
-    private javax.swing.JLabel NameText;
-    private javax.swing.JLabel NameValue;
-    private javax.swing.JLabel PhoneText;
-    private javax.swing.JLabel PhoneValue;
-    private javax.swing.JLabel UserNameText;
-    private javax.swing.JLabel UsernameValue;
+    private javax.swing.JTable Eventtab;
+    private javax.swing.JButton back;
+    private javax.swing.JLabel emailtxt;
+    private javax.swing.JPanel eventlist;
+    private javax.swing.JButton feedback;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel nametxt;
+    private javax.swing.JLabel phonetxt;
+    private javax.swing.JLabel usernametxt;
     // End of variables declaration//GEN-END:variables
 }

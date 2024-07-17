@@ -1,15 +1,25 @@
 package com.mycompany.college_event_management.pages;
 
+import com.mycompany.college_event_management.Utils.EventTableModel;
 import com.mycompany.college_event_management.Utils.MD5;
 import com.mycompany.college_event_management.database.AppState;
 import com.mycompany.college_event_management.database.DatabaseManager;
-import com.mycompany.college_event_management.database.tables.Admin;
+import com.mycompany.college_event_management.database.tables.Event;
+import com.mycompany.college_event_management.database.tables.admin;
 import com.mycompany.college_event_management.database.tables.Organizer;
 import com.mycompany.college_event_management.database.tables.Participant;
-import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 
 /*
@@ -26,32 +36,59 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    
+    private List<String> items = new ArrayList<>();
+//    private JPanel EventsList;
+
     public Login() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //this.setSize(new Dimension(400, 300));
+//        this.EventsList = new JPanel();
+          eventlist.setLayout(new BoxLayout(eventlist, BoxLayout.Y_AXIS));
+//        JScrollPane scrollPane = new JScrollPane(EventsList);
+//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        fetchRegisteredEvents();
     }
     
-     public void init() {
-        try {
-            // Get the singleton instance of DatabaseManager
-            DatabaseManager dbManager = DatabaseManager.getInstance();
-            
-            // Execute a query
-            ResultSet rs = dbManager.executeQuery("SELECT * FROM test");
-            
-            // Process the result set
-            while (rs.next()) {
-                // Handle each row of the result set
-                String column1 = rs.getString("b");
-                System.out.println(column1);
-                // Process other columns as needed
-            }
-            
-            // Close the result set
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void fetchRegisteredEvents(){
+        var allEvents = Event.getAllEvents();
+        System.err.println("allEvents" + allEvents.size());
+        //Table
+        EventTableModel model = new EventTableModel(allEvents);
+        eventTab.setModel(model);
+        
+        //Pannel with delete
+//        for (Event e : allEvents) {
+//          items.add(e.eventName);
+//        }
+        refreshItemList();
+    }
+    
+    private void refreshItemList() {
+        eventlist.removeAll();
+
+        for (String item : items) {
+            JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel itemLabel = new JLabel(item);
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener((ActionEvent e) -> {
+                items.remove(item);
+                refreshItemList();
+                // Revalidate and repaint to ensure UI updates are displayed
+                eventlist.revalidate();
+                eventlist.repaint();
+            });
+
+            itemPanel.add(itemLabel);
+            itemPanel.add(deleteButton);
+            eventlist.add(itemPanel);
+            System.out.println("added "+ item);
+        }
+
+        // In case the list is empty, show a message
+        if (items.isEmpty()) {
+            eventlist.add(new JLabel("No items available."));
         }
     }
 
@@ -69,21 +106,30 @@ public class Login extends javax.swing.JFrame {
         userName = new javax.swing.JTextField();
         password = new javax.swing.JPasswordField();
         LoginButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         roleSelection = new javax.swing.JComboBox<>();
+        signup = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        eventTab = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        eventlist = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(null);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setBackground(new java.awt.Color(255, 255, 204));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Username");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(870, 220, 170, 32);
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setBackground(new java.awt.Color(255, 255, 204));
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setText("Password");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 160, 68, -1));
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(870, 280, 120, 32);
 
         userName.setBackground(new java.awt.Color(255, 255, 204));
         userName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -92,7 +138,8 @@ public class Login extends javax.swing.JFrame {
                 userNameActionPerformed(evt);
             }
         });
-        getContentPane().add(userName, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 200, -1));
+        getContentPane().add(userName);
+        userName.setBounds(1040, 220, 200, 26);
 
         password.setBackground(new java.awt.Color(255, 255, 204));
         password.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -101,38 +148,83 @@ public class Login extends javax.swing.JFrame {
                 passwordActionPerformed(evt);
             }
         });
-        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 200, -1));
+        getContentPane().add(password);
+        password.setBounds(1040, 290, 200, 26);
 
-        LoginButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        LoginButton.setBackground(new java.awt.Color(255, 255, 204));
+        LoginButton.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         LoginButton.setText("Login");
         LoginButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 LoginButtonMouseClicked(evt);
             }
         });
-        getContentPane().add(LoginButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, -1, -1));
+        getContentPane().add(LoginButton);
+        LoginButton.setBounds(950, 370, 140, 39);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setText("Close");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 260, -1, -1));
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 40, -1, -1));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setText("Select User Type");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 120, 40));
-
-        roleSelection.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Organizer", "Participant" }));
+        roleSelection.setBackground(new java.awt.Color(255, 255, 204));
+        roleSelection.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        roleSelection.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Participant", "Organizer" }));
         roleSelection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 roleSelectionActionPerformed(evt);
             }
         });
-        getContentPane().add(roleSelection, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 40, -1, 30));
+        getContentPane().add(roleSelection);
+        roleSelection.setBounds(940, 20, 260, 60);
+
+        signup.setBackground(new java.awt.Color(255, 255, 204));
+        signup.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        signup.setText("Signup");
+        signup.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                signupMouseClicked(evt);
+            }
+        });
+        signup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signupActionPerformed(evt);
+            }
+        });
+        getContentPane().add(signup);
+        signup.setBounds(1170, 550, 190, 39);
+
+        jPanel2.setBackground(new java.awt.Color(204, 255, 255));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        eventTab.setBackground(new java.awt.Color(255, 255, 204));
+        eventTab.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(eventTab);
+
+        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 210, 660, -1));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel4.setText("List Of Events");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, 240, -1));
+        jPanel2.add(eventlist, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, -1, -1));
+
+        getContentPane().add(jPanel2);
+        jPanel2.setBounds(0, 0, 770, 1190);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel3.setText("Don't you have an account ?");
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(810, 550, 330, 30);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(770, 0, 730, 1180);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -145,10 +237,6 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void roleSelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleSelectionActionPerformed
         // TODO add your handling code here:
         System.out.println(roleSelection.getSelectedItem());
@@ -158,20 +246,25 @@ public class Login extends javax.swing.JFrame {
        String pHash= null;
         switch(roleSelection.getSelectedItem().toString()){
            case "Admin":
-               Admin ad = Admin.getAdminByUsername(userName.getText());
+               admin ad = admin.getAdminByUsername(userName.getText());
                 if(ad == null){
+                    
+                    JOptionPane.showMessageDialog(this, "Admin not found", "Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Admin not found wrong user name " + userName.getText());
                     return;
                 }
                 pHash = MD5.hashPassword(password.getText());
                 if(pHash.equals(ad.adminPassword)) {
+                    
                     System.out.println("Login successfull");
+                    JOptionPane.showMessageDialog(this, "Login successful", "Success", JOptionPane.INFORMATION_MESSAGE);
                     //Redirect to organizer page
                     admin_home adminPage = new admin_home();
                     adminPage.setVisible(true);
                     this.dispose();
                 }
                 else {
+                    JOptionPane.showMessageDialog(this, "Incorrect password", "Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong password");
                     //Update Error text here
                 }
@@ -181,10 +274,12 @@ public class Login extends javax.swing.JFrame {
                 Organizer org = Organizer.getOrganizerByUsername(userName.getText());
                 if(org == null){
                     System.out.println("Organizer not found wrong user name " + userName.getText());
+                    JOptionPane.showMessageDialog(this, "Organizer not found.. ", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 pHash = MD5.hashPassword(password.getText());
                 if(pHash.equals(org.organizerPassword)) {
+                    JOptionPane.showMessageDialog(this, "Login successful", "Success", JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("Login successfull");
                     AppState.logedinOrg = org;
                     //Redirect to organizer page
@@ -193,6 +288,7 @@ public class Login extends javax.swing.JFrame {
                     this.dispose(); 
                 }
                 else {
+                    JOptionPane.showMessageDialog(this, "Incorrect password", "Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong password");
                     //Update Error text here
                 }
@@ -200,24 +296,39 @@ public class Login extends javax.swing.JFrame {
             case "Participant":
                 Participant part = Participant.getParticipantByUsername(userName.getText());
                 if(part == null){
+                    JOptionPane.showMessageDialog(this, "Participant not found", "Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Participant not found!! wrong user name " + userName.getText());
                     return;
                 }
                 pHash = MD5.hashPassword(password.getText());
                 if(pHash.equals(part.ParticipantPassword)) {
+                    JOptionPane.showMessageDialog(this, "Login successful", "Success", JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("Login successfull");
+                    AppState.logedingpart = part;
                     //Redirect to organizer page
                     participant_home sPage = new participant_home();
                     sPage.setVisible(true);
                     this.dispose(); 
                 }
                 else {
+                    JOptionPane.showMessageDialog(this, "Incorrect password", "Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong password");
                     //Update Error text here
                 }
                break;
        }
     }//GEN-LAST:event_LoginButtonMouseClicked
+
+    private void signupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupMouseClicked
+        // TODO add your handling code here:
+                    p_signup signup = new p_signup();
+                    signup.setVisible(true);
+                    this.dispose();
+    }//GEN-LAST:event_signupMouseClicked
+
+    private void signupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_signupActionPerformed
 
     /**
      * @param args the command line arguments
@@ -256,13 +367,18 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LoginButton;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTable eventTab;
+    private javax.swing.JPanel eventlist;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPasswordField password;
     private javax.swing.JComboBox<String> roleSelection;
+    private javax.swing.JButton signup;
     private javax.swing.JTextField userName;
     // End of variables declaration//GEN-END:variables
 }
